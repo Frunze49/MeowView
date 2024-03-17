@@ -1,0 +1,39 @@
+@startuml "messagebus"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+
+AddElementTag("microService", $shape=EightSidedShape(), $bgColor="CornflowerBlue", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("storage", $shape=RoundedBoxShape(), $bgColor="lightSkyBlue", $fontColor="white")
+
+SHOW_PERSON_OUTLINE()
+
+Container(customer, WEB, "django", "Frontend")
+
+System_Boundary(c1, "API") {
+    Container(main, "User Application", "Python, FastAPI", "Main service that provides client API and authentication")
+    Container(statistics_service, "Statistics MicroService", "Python, FastAPI", "Get statistics", $tags = "microService")
+    Container(posts_service, "Posts and Coms MicroService", "Python, FastAPI", "Get posts", $tags = "microService")
+    Container(message_bus, "Message Bus", "RabbitMQ", "Transport for views or likes")
+}
+
+System_Boundary(c2, "DB") {
+    ContainerDb(user_db, "User Database", "PostgreSQL", "Stores user information", $tags = "storage")
+    ContainerDb(statistics_db, "Statistics Database", "Clickhouse", "Stores statistics about posts", $tags = "storage")
+    ContainerDb(posts_db, "Posts and Coms Database", "PostgreSQL", "Stores information about posts", $tags = "storage")
+}
+
+Rel_D(customer, main, "Uses", "HTTPS")
+Rel(main, user_db, "Updates data in", "sqlalchemy")
+
+Rel_R(main, message_bus, "Like/View", "async, gRPC")
+Rel_D(message_bus, statistics_service, "Updates posts statistics", "async, gRPC")
+Rel(statistics_service, statistics_db, "Updates data in", "sqlalchemy")
+
+Rel_D(main, posts_service, "CRUD posts", "async, gRPC")
+Rel(posts_service, posts_db, "CRUD data in", "sqlalchemy")
+
+
+SHOW_LEGEND()
+
+@enduml
