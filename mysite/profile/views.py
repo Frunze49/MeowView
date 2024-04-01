@@ -14,8 +14,9 @@ from .forms import UserForm, ProfileForm, RegForm
 
 def register_user(request):
     if request.method == 'POST':
-        username = request.data.get('username')
-        password = request.data.get('password')
+        data = request.POST
+        username = data.get('username')
+        password = data.get('password')
 
         try:
             user = User.objects.get(username=username)
