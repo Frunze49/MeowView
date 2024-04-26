@@ -10,5 +10,30 @@
 <body>
     <h1>Привет! Это тебе:</h1>
     <p>(=^-ω-^=)(=^･ω･^=)(=^･ｪ･^=)</p>
+    <ul>
+        {% for item in posts %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <button onclick="UpdateProgile()">Обновить профиль</button>
+    <button onclick="AddPost()">Добавить пост</button>
+    <button onclick="DeletePost()">Удалить пост</button>
+    <button onclick="UpdatePost()">Обновить пост</button>
+    <button onclick="GetPost()">Прочитать пост</button>
+
+    
+
+    <script>
+        function UpdateProgile() {
+            // Выполняем редирект на другую страницу
+            window.location.href = '/user/update';
+        }
+
+        function UpdateProgile() {
+            // Выполняем редирект на другую страницу
+            window.location.href = '/home/add';
+        }
+    </script>
 </body>
 </html>

@@ -41,7 +41,7 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('update')
+            return redirect('home_page')
             
     return render(request, 'login.html')
             

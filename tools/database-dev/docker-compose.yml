@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRES_MULTIPLE_DATABASES: users_database
+      POSTGRES_MULTIPLE_DATABASES: users_database, posts_database
     ports:
       - "5432:5432"
     networks:
