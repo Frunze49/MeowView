@@ -28,6 +28,16 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
+}
+
+LOGIN_URL = 'http://127.0.0.1:9000/user/login/'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -74,6 +84,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 AUTH_PROFILE_MODULE = 'profile.Profile'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+
 
 
 # Database
@@ -127,7 +142,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

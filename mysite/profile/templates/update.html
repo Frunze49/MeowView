@@ -23,6 +23,7 @@
         }
         .form-group {
             margin-bottom: 20px;
+            margin-right: 20px;
         }
         .form-group label {
             display: block;
@@ -61,29 +62,29 @@
             <p class="error-message">{{ error }}</p>
         {% endif %}
         <form action="#" method="post">
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
             <div class="form-group">
                 <label for="first_name">First name</label>
-                <input type="text" id="first_name" name="first_name">
+                <input type="text" id="first_name" name="first_name" value="{{ user_form.first_name.value }}">
             </div>
             <div class="form-group">
                 <label for="last_name">Last name</label>
-                <input type="text" id="last_name" name="last_name">
+                <input type="text" id="last_name" name="last_name" value="{{ user_form.last_name.value }}">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email">
+                <input type="email" id="email" name="email" value="{{ user_form.email.value }}">
             </div>
             <div class="form-group">
                 <label for="phone_number">Phone number (12 digits, example: 81112223344)</label>
-                <input type="tel" id="phone_number" name="phone_number" pattern="[0-9]{11}">
+                <input type="tel" id="phone_number" name="phone_number" pattern="[0-9]{11}" value="{{ phone_number }}">
             </div>
             <div class="form-group">
-                <label for="birthday">Last name</label>
-                <input type="date" id="birthday" name="birthday">
+                <label for="birthday">birthday</label>
+                <input type="date" id="birthday" name="birthday" value="{{ user_birthday }}">
             </div>
             <div class="form-group">
-                <button type="submit">Login</button>
+                <button type="submit">Update</button>
             </div>
         </form>
     </div>

@@ -8,6 +8,11 @@ import grpc
 import grpc_api.posts_pb2 as posts_pb2
 import grpc_api.posts_pb2_grpc as posts_pb2_grpc
 
+from PIL import Image
+from io import BytesIO
+import sys
+import base64
+
 from .forms import PostForm
 
 
@@ -22,7 +27,17 @@ def show_posts():
         stub = posts_pb2_grpc.GreeterStub(channel)
         response = stub.ListPost(posts_pb2.ListRequest())
 
-    return response.list
+    tmp = []
+    for i in response.list:
+        tmp.append(
+            {
+                'login': i.login,
+                'description': i.description,
+                'image': base64.b64encode(i.image).decode('utf-8')
+            }
+        )
+
+    return tmp
 
 def get_post(request, id):
     with grpc.insecure_channel("localhost:50051") as channel:
@@ -37,8 +52,6 @@ def add_post(request):
     if request.method == 'POST':
         post_form = PostForm(request.POST, request.FILES)
         response = None
-        print(post_form.data['description'])
-        print(post_form.is_valid())
         if post_form.is_valid():
             image_file = post_form.cleaned_data['image']
 

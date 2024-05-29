@@ -1,39 +1,114 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cute Cat</title>
+    <title>Instagram Style Posts</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .post-header {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+        }
+        
+        .responsive-image {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 500px;
+        }
+
+        @media (min-width: 600px) {
+            .responsive-image {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .responsive-image {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        .post-spacer {
+            height: 50px; 
+        }
+
+        .image-spacer {
+            height: 10px; 
+        }
+
+        .button-container {
+            display: flex;
+            gap: 5%;
+        }
+        .button {
+            padding: 1px 3px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff);
+            transform: translateY(-2px);
+        }
+        .button:active {
+            background: linear-gradient(45deg, #003d7a, #004f99);
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет! Это тебе:</h1>
-    <p>(=^-ω-^=)(=^･ω･^=)(=^･ｪ･^=)</p>
-    <ul>
+
+    <div class="container">
+
+        <div class="button-container">
+            <a href="/user/update" class="button">Update Profile</a>
+            <a href="/home/add_post" class="button">Add new post</a>
+        </div>
+        <div class="image-spacer"></div>
+
         {% for item in posts %}
-            <li>{{ item }}</li>
+            <div class="post">
+                <div class="post-header">
+                    <img class="responsive-image" src="data:image/png;base64,{{ item.image }}" alt="Profile Picture">
+                    <div class="image-spacer"></div>
+                    <b>{{ item.login }}:</b>{{ item.description }}
+                    <div class="image-spacer"></div>
+                </div>
+                <div class="post-content">
+                    <div class="actions">
+                        <button class="like-btn" onclick="toggleLike(this)">❤️ Like</button>
+                        <button class="comment-btn">💬 Comment</button>
+                        <div class="post-spacer"></div>
+                    </div>
+                </div>
+            </div>
+            <script src="../own_js/script.js"></script>
         {% endfor %}
-    </ul>
-
-    <button onclick="UpdateProgile()">Обновить профиль</button>
-    <button onclick="AddPost()">Добавить пост</button>
-    <button onclick="DeletePost()">Удалить пост</button>
-    <button onclick="UpdatePost()">Обновить пост</button>
-    <button onclick="GetPost()">Прочитать пост</button>
-
-    
-
-    <script>
-        function UpdateProgile() {
-            // Выполняем редирект на другую страницу
-            window.location.href = '/user/update';
-        }
-
-        function UpdateProgile() {
-            // Выполняем редирект на другую страницу
-            window.location.href = '/home/add';
-        }
-    </script>
+    </div>
 </body>
 </html>
