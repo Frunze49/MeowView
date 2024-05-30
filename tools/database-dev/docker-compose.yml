@@ -1,11 +1,51 @@
 version: "3"
 
 services:
+  grpc_service:
+    build:
+      context: ../../mysite/grpc_api/
+      dockerfile: Dockerfile.grpc
+    ports:
+      - "50051:50051"
+    networks:
+      - meowview-network
+    depends_on:
+      - postgresql
+    environment:
+      - DATABASE_NAME=posts_database
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=postgresql
+      - DATABASE_PORT=5432
+      - DOCKER_CLI_CONFIG=/etc/docker/daemon.json
+    
+  web:
+    build:
+      context: ../../mysite/
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgresql
+      - grpc_service
+    networks:
+      - meowview-network
+    environment:
+      - DATABASE_NAME=users_database
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=postgresql
+      - DATABASE_PORT=5432
+      - GRPC_HOST=grpc_service
+      - GRPC_PORT=50051
+      - DOCKER_CLI_CONFIG=/etc/docker/daemon.json
+
   postgresql:
     container_name: "meowview-postgresql"
     image: postgres:15.5
     restart: unless-stopped
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_MULTIPLE_DATABASES: users_database, posts_database
     ports:
@@ -45,3 +85,5 @@ services:
 networks:
   meowview-network:
     name: "meowview-network"
+    driver: bridge
+

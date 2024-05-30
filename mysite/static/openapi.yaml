@@ -14,7 +14,7 @@ components:
 
 
 paths:
-  /register/:
+  /user/register/:
     post:
       tags:
         - User
@@ -54,7 +54,7 @@ paths:
               schema:
                 type: string
 
-  /login/:
+  /user/login/:
     post:
       tags:
         - User
@@ -94,7 +94,7 @@ paths:
               schema:
                 type: string
 
-  /update/:
+  /user/update/:
     post:
       security:
         - basicAuth: []
@@ -146,5 +146,168 @@ paths:
               schema:
                 type: string
 
+  /home/add_post:
+    post:
+      tags:
+        - Post
+      summary: Добавление поста
+      description: Создание нового поста от имени текущего пользователя.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: This is description
+                image:
+                  type: string
+                  format: binary
+                  example: secretpassword
+              required:
+                - description
+                - image
+      responses:
+        '200':
+          description: Пост успешно добавлен.
+        '302':
+          description: Пользователь не авторизован.
+    get:
+      summary: Получить форму регистрации
+      tags:
+        - User
+      responses:
+        '200':
+          description: Успешно получили форму регистрации.
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Пользователь не авторизован.
+
+  /home/update_post/{postId}/:
+    parameters:
+    - in: path
+      name: postId
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: The ID of the post to retrieve
+    post:
+      tags:
+        - Post
+      summary: Обновление поста
+      description: Создание нового поста от имени текущего пользователя.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: This is description
+                image:
+                  type: string
+                  format: binary
+                  example: secretpassword
+              required:
+                - description
+                - image
+      responses:
+        '200':
+          description: Пост успешно добавлен.
+        '302':
+          description: Пользователь не авторизован.
+    get:
+      summary: Получить форму обновления поста
+      tags:
+        - Post
+      responses:
+        '200':
+          description: Успешно получили форму регистрации.
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Пользователь не авторизован.
+
+  /home/get_post/{postId}/:
+    get:
+      summary: Получить информацию о посте.
+      tags:
+        - Post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The ID of the post to retrieve
+      responses:
+        '200':
+          description: Успешно получил пост.
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Пост не найден
+
+  /home/:
+    parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: The page_number
+    get:
+      summary: Получить посты по странице.
+      tags:
+        - Post
+      responses:
+        '200':
+          description: Успешно получил посты.
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Пост не найден
+
+  /home/delete_post/{postId}/:
+    post:
+      summary: Удалить пост.
+      tags:
+        - Post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The ID of the post to retrieve
+      responses:
+        '200':
+          description: Успешно удалил пост.
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Пост не найден
+
+
+
 servers:
-- url: "http://127.0.0.1:9000/user/"
+- url: "http://127.0.0.1:9000/"
