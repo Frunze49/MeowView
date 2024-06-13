@@ -1,11 +1,20 @@
-FROM ubuntu
+FROM python
 
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip libpq-dev
-RUN apt-get install tzdata
-RUN apt-get clean
+# ENV DEBIAN_FRONTEND=noninteractive
 
-ENV TZ=UTC
+# RUN apt-get update
+# RUN apt-get install -y python3 python3-pip libpq-dev
+# RUN apt-get install -y tzdata
+# RUN apt-get install -y python3-venv
+# RUN apt-get clean
+
+# RUN python3 -m venv /opt/venv
+
+# ENV PATH="/opt/venv/bin:$PATH"
+
+# RUN pip install --upgrade pip
+
+# ENV TZ=UTC
 
 WORKDIR /app
 

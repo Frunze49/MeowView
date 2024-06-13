@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,6 +104,8 @@
             background-color: #ccc;
         }
     </style>
+
+    <script src="{% static 'own.js' %}" defer></script>
 </head>
 <body>
 
@@ -125,13 +129,12 @@
                 </div>
                 <div class="post-content">
                     <div class="actions">
-                        <button class="like-btn" onclick="toggleLike(this)">❤️ Like</button>
+                        <button class="like-btn">❤️ Like</button>
                         <button class="comment-btn">💬 Comment</button>
                         <div class="post-spacer"></div>
                     </div>
                 </div>
             </div>
-            <script src="../own_js/script.js"></script>
         {% endfor %}
 
         <div class="pagination">
