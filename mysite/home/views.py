@@ -11,6 +11,9 @@ import grpc
 import grpc_api.posts_pb2 as posts_pb2
 import grpc_api.posts_pb2_grpc as posts_pb2_grpc
 
+import grpc_api.statistics.statistics_pb2 as statistics_pb2
+import grpc_api.statistics.statistics_pb2_grpc as statistics_pb2_grpc
+
 import kafka_service.publisher as publisher
 
 from PIL import Image
@@ -37,7 +40,7 @@ def home_page(request):
 @csrf_exempt
 @login_required
 def show_posts(request, page_number):
-    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}") as channel:
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
         stub = posts_pb2_grpc.GreeterStub(channel)
         response = stub.ListPost(posts_pb2.ListRequest())
 
@@ -61,20 +64,25 @@ def show_posts(request, page_number):
 @csrf_exempt
 @login_required
 def get_post(request, id):
-    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}") as channel:
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
         stub = posts_pb2_grpc.GreeterStub(channel)
         response = stub.GetPost(posts_pb2.GetRequest(id=id, login=request.user.username))
+
+    likes, views = get_statistics(request, id)
 
     tmp =   {
                 'id': response.post.id,
                 'login': response.post.login,
                 'description': response.post.description,
-                'image': base64.b64encode(response.post.image).decode('utf-8')
+                'image': base64.b64encode(response.post.image).decode('utf-8'),
+                'likes': likes,
+                'views': views
             }
     
-    send_view(request, id)
+    send_view(request, id, response.post.login)
 
-    return render(request, 'get_post.html', {'post': tmp, 'permission': response.post.login == request.user.username})
+    return render(request, 'get_post.html', {'post': tmp, 'permission': response.post.login == request.user.username, 
+                                             'likes': likes, 'views': views})
 
 
 @csrf_exempt
@@ -86,7 +94,7 @@ def add_post(request):
         if post_form.is_valid():
             image_file = post_form.cleaned_data['image']
 
-            with grpc.insecure_channel(f"{grpc_host}:{grpc_port}") as channel:
+            with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
                 stub = posts_pb2_grpc.GreeterStub(channel)
                 post = posts_pb2.Post(
                     login=request.user.username,
@@ -111,7 +119,7 @@ def add_post(request):
 @csrf_exempt
 @login_required
 def delete_post(request, id):
-    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}") as channel:
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
         stub = posts_pb2_grpc.GreeterStub(channel)
         response = stub.DeletePost(posts_pb2.DeleteRequest(id=id, login=request.user.username))
     if response.success:
@@ -129,7 +137,7 @@ def update_post(request, id):
         if post_form.is_valid():
             image_file = post_form.cleaned_data['image']
 
-            with grpc.insecure_channel(f"{grpc_host}:{grpc_port}") as channel:
+            with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
                 stub = posts_pb2_grpc.GreeterStub(channel)
                 post = posts_pb2.Post(
                     id=id,
@@ -154,26 +162,64 @@ def update_post(request, id):
 
 
 @csrf_exempt
-# @login_required
-# @api_view(['POST'])
 def send_action(request):
     data = json.loads(request.body)
     post_id = data['post_id']
     action = data['action']
-    publisher.send_to_kafka(post_id, request.user.id, action)
+    author = data['author']
+    publisher.send_to_kafka(post_id, request.user.id, action, author)
     return JsonResponse({'status': 'success'}, status=200)
 
 
 @csrf_exempt
-# @login_required
-# @api_view(['POST'])
-def send_view(request, post_id):
-    publisher.send_to_kafka(post_id, request.user.id, 'view')
+def send_view(request, post_id, author):
+    publisher.send_to_kafka(post_id, request.user.id, 'view', author)
 
 
 @csrf_exempt
-@login_required
-@api_view(['GET'])
-def get_statistics(request):
-    publisher.send_to_kafka(id, request.user.id, 'view')
-    return JsonResponse({'status': 'success'}, status=200)
+def get_statistics(request, id):
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
+        stub = statistics_pb2_grpc.GreeterStub(channel)
+        response = stub.GetStatistics(statistics_pb2.StatisticRequest(post_id=id))
+    
+    return response.likes, response.views
+
+@csrf_exempt
+def top_users(request):
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
+        stub = statistics_pb2_grpc.GreeterStub(channel)
+        response = stub.TopUsers(statistics_pb2.TopUsersRequest())
+    
+    tmp = []
+    for i in response.users:
+        tmp.append(
+            {
+                'author': i.author,
+                'likes': i.likes,
+            }
+        )
+
+    return render(request, 'top_users.html', {'users': tmp})
+
+@csrf_exempt
+def top_posts(request, filter):
+    with grpc.insecure_channel(f"{grpc_host}:{grpc_port}", options=[('grpc.max_receive_message_length', 10 * 1024 * 1024)]) as channel:
+        stub = statistics_pb2_grpc.GreeterStub(channel)
+        response = stub.TopPosts(statistics_pb2.TopPostsRequest(filter=filter))
+    
+    tmp = []
+    for i in response.posts:
+        tmp.append(
+            {
+                'post_id': i.post_id,
+                'author': i.author,
+                'description': i.description,
+                'image': base64.b64encode(i.image).decode('utf-8'),
+                'likes': i.likes,
+                'views': i.views,
+            }
+        )
+    
+    return render(request, 'top_posts.html', {'posts': tmp})
+
+

@@ -19,11 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const action = 'like';
         const postId = getPostIdFromUrl();
 
+        var postDataElement = document.getElementById('post-login');
+        var postLogin = postDataElement.getAttribute('data-post-login');
+
         // Отправляем асинхронный запрос на сервер
-        sendActionToKafka(postId, action);
+        sendActionToKafka(postId, action, postLogin);
     });
 
-    function sendActionToKafka(postId, action) {
+    function sendActionToKafka(postId, action, postLogin) {
         fetch('/home/send_action/', {
             method: 'POST',
             headers: {
@@ -32,7 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 post_id: postId,
-                action: action
+                action: action,
+                author: postLogin
             })
         })
         .then(response => response.json())

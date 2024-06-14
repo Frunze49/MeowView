@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram Style Posts</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         .container {
             font-family: Arial, sans-serif;
@@ -86,6 +85,9 @@
     <script src="{% static 'own.js' %}" defer></script>
 </head>
 <body>
+    <div id="post-login" data-post-login="{{ post.login }}"></div>
+    <div id="post-id" data-post-id="{{ post.id }}"></div>
+
 
     <div class="container">
 
@@ -112,6 +114,7 @@
                 <div class="actions">
                     <button class="like-btn" id="like-btn">❤️ Like</button>
                     <button class="comment-btn">💬 Comment</button>
+                    <b>Likes: </b> {{ post.likes }} <b>Views: </b> {{ post.views }}
                     <div class="post-spacer"></div>
                 </div>
             </div>

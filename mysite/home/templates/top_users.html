@@ -111,56 +111,19 @@
     <div class="container">
 
         <div class="button-container">
-            <a href="/user/update" class="button">Update Profile</a>
-            <a href="/home/add_post" class="button">Add new post</a>
-            <a href="/home/top_users" class="button">See top users</a>
-            <a href="/home/top_posts/like" class="button">See most liked posts</a>
-            <a href="/home/top_posts/view" class="button">See most viewed posts</a>
+            <a href="/home" class="button">HOME</a>
         </div>
         <div class="image-spacer"></div>
 
-        {% for item in posts.page %}
-            <div id="post-login" data-post-login="{{ item.login }}"></div>
-            <div id="post-id" data-post-id="{{ post.id }}"></div>
-
+        {% for item in users %}
             <div class="post">
                 <div class="post-header">
-                    <a href="{% url 'get_post' item.id %}">
-                        <img class="responsive-image" src="data:image/png;base64,{{ item.image }}" alt="Profile Picture">
-                    </a>
+                    <b>{{ item.author }}:</b> {{ item.likes }} likes.
                     <div class="image-spacer"></div>
-                    <b>{{ item.login }}:</b>{{ item.description }}
-                    <div class="image-spacer"></div>
-                </div>
-                <div class="post-content">
-                    <div class="actions">
-                        <button class="like-btn" id="like-btn">❤️ Like</button>
-                        <button class="comment-btn">💬 Comment</button>
-                        <div class="post-spacer"></div>
-                    </div>
                 </div>
             </div>
         {% endfor %}
 
-        <div class="pagination">
-            {% if current_page > 1 %}
-                <li><a href="?page=1">&laquo; First</a></li>
-                <li><a href="?page={{ current_page|add:-1 }}">Previous</a></li>
-            {% else %}
-                <li class="disabled"><a>&laquo; First</a></li>
-                <li class="disabled"><a>Previous</a></li>
-            {% endif %}
-
-    
-            {% if current_page < posts.num_pages %}
-                <li><a href="?page={{ current_page|add:1 }}">Next</a></li>
-                <li><a href="?page={{ posts.num_pages }}">Last &raquo;</a></li>
-            {% else %}
-                <li class="disabled"><a>Next</a></li>
-                <li class="disabled"><a>Last &raquo;</a></li>
-            {% endif %}
-        </div>
-    
     </div>
 </body>
 </html>

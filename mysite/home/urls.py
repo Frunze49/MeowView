@@ -9,5 +9,6 @@ urlpatterns = [
     path('home/update_post/<int:id>/', views.update_post, name='update_post'),
 
     path('home/send_action/', views.send_action, name='send_action'),
-    path('home/get_statistics/', views.get_statistics, name='get_statistics'),
+    path('home/top_users', views.top_users, name='top_users'),
+    path('home/top_posts/<str:filter>', views.top_posts, name='top_posts'),
 ]
