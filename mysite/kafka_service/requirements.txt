@@ -1,8 +1,7 @@
 django
 djangorestframework
-grpcio
-grpcio-tools
 sqlalchemy
 psycopg2
-Pillow
+alembic
+psycopg2-binary
 git+https://github.com/dpkp/kafka-python.git

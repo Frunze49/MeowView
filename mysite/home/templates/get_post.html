@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +82,8 @@
             transform: translateY(0);
         }
     </style>
+
+    <script src="{% static 'own.js' %}" defer></script>
 </head>
 <body>
 
@@ -106,7 +110,7 @@
             </div>
             <div class="post-content">
                 <div class="actions">
-                    <button class="like-btn" onclick="toggleLike(this)">❤️ Like</button>
+                    <button class="like-btn" id="like-btn">❤️ Like</button>
                     <button class="comment-btn">💬 Comment</button>
                     <div class="post-spacer"></div>
                 </div>

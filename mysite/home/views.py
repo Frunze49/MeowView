@@ -5,20 +5,24 @@ from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 import grpc
 import grpc_api.posts_pb2 as posts_pb2
 import grpc_api.posts_pb2_grpc as posts_pb2_grpc
+
+import kafka_service.publisher as publisher
 
 from PIL import Image
 from io import BytesIO
 import sys
 import base64
 import os
+import json
 
 from .forms import PostForm
 
-grpc_host = 'postgresql' # temp
+grpc_host = 'grpc_service' # temp
 grpc_port = '50051'
 
 @csrf_exempt
@@ -67,6 +71,8 @@ def get_post(request, id):
                 'description': response.post.description,
                 'image': base64.b64encode(response.post.image).decode('utf-8')
             }
+    
+    send_view(request, id)
 
     return render(request, 'get_post.html', {'post': tmp, 'permission': response.post.login == request.user.username})
 
@@ -147,3 +153,27 @@ def update_post(request, id):
     return render(request, 'add_post.html', context)
 
 
+@csrf_exempt
+# @login_required
+# @api_view(['POST'])
+def send_action(request):
+    data = json.loads(request.body)
+    post_id = data['post_id']
+    action = data['action']
+    publisher.send_to_kafka(post_id, request.user.id, action)
+    return JsonResponse({'status': 'success'}, status=200)
+
+
+@csrf_exempt
+# @login_required
+# @api_view(['POST'])
+def send_view(request, post_id):
+    publisher.send_to_kafka(post_id, request.user.id, 'view')
+
+
+@csrf_exempt
+@login_required
+@api_view(['GET'])
+def get_statistics(request):
+    publisher.send_to_kafka(id, request.user.id, 'view')
+    return JsonResponse({'status': 'success'}, status=200)

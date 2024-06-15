@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
 
     function getPostIdFromUrl() {
@@ -5,27 +6,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const pathParts = path.split('/'); // Разделяем URL на части
 
         // Предполагаем, что URL имеет вид /post/123/ и postId находится на втором месте
-        const postIdIndex = pathParts.indexOf('post') + 1;
+        const postIdIndex = pathParts.indexOf('get_post') + 1;
         return pathParts[postIdIndex] || null; // Возвращаем postId или null, если не найдено
     }
 
-    // Получаем postId из URL
-    const postId = getPostIdFromUrl();
-
     // Пример кнопки лайка с ID "like-button"
-    document.getElementById('like-button').addEventListener('click', function(event) {
+    document.getElementById('like-btn').addEventListener('click', function(event) {
         // Предотвращаем переход по ссылке или отправку формы
         event.preventDefault();
 
         // Получаем необходимые данные
         const action = 'like';
+        const postId = getPostIdFromUrl();
 
         // Отправляем асинхронный запрос на сервер
         sendActionToKafka(postId, action);
     });
 
-    function sendActionToKafka(postId, userId, action) {
-        fetch('/send_action/', {
+    function sendActionToKafka(postId, action) {
+        fetch('/home/send_action/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,4 +46,4 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error:', error));
     }
-});
+    });
