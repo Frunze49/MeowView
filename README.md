@@ -8,10 +8,6 @@
 Social net
 
 
-# Как запустить бд
+# Как запустить все
 
-~/MeowView/tools/database-dev$ docker compose up
-
-# Запустить сервер
-
-~/MeowView/mysite$ python3 manage.py runserver 9000
+~/MeowView/tools/database-dev$ docker-compose up

@@ -1,0 +1,7 @@
+django
+djangorestframework
+grpcio
+grpcio-tools
+sqlalchemy
+psycopg2
+Pillow

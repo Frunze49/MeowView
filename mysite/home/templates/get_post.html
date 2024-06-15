@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Style Posts</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .post-header {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+        }
+        
+        .responsive-image {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 500px;
+        }
+
+        @media (min-width: 600px) {
+            .responsive-image {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .responsive-image {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        .post-spacer {
+            height: 50px; 
+        }
+
+        .image-spacer {
+            height: 10px; 
+        }
+
+        .button-container {
+            display: flex;
+            gap: 5%;
+        }
+        .button {
+            padding: 1px 3px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff);
+            transform: translateY(-2px);
+        }
+        .button:active {
+            background: linear-gradient(45deg, #003d7a, #004f99);
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        {% if permission %}
+            <div class="button-container">
+                <a href="{% url 'delete_post' post.id %}" class="button">
+                    Delete
+                </a>
+                <a href="{% url 'update_post' post.id %}" class="button">
+                    Update
+                </a>
+            </div>
+            <div class="image-spacer"></div>
+        {% endif %}
+
+        <div class="post">
+            <div class="post-header">
+                <img class="responsive-image" src="data:image/png;base64,{{ post.image }}" alt="Profile Picture">
+                <div class="image-spacer"></div>
+                <b>{{ post.login }}:</b>{{ post.description }}
+                <div class="image-spacer"></div>
+            </div>
+            <div class="post-content">
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this)">❤️ Like</button>
+                    <button class="comment-btn">💬 Comment</button>
+                    <div class="post-spacer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

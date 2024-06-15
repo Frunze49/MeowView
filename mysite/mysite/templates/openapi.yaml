@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: User API
+  description: API для управления пользователями (регистрация, аутентификация, обновление)
+  version: 1.0.0
+
+security:
+  - basicAuth: []
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+
+paths:
+  /register/:
+    post:
+      tags:
+        - User
+      summary: Регистрация пользователя
+      description: Создание новой учетной записи пользователя
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  format: password
+                  example: secretpassword
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Пользователь успешно зарегистрирован.
+        '400':
+          description: Пользователь с таким именем уже существует.
+    get:
+      summary: Получить форму регистрации
+      tags:
+        - User
+      responses:
+        '200':
+          description: Успешно получили форму регистрации.
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /login/:
+    post:
+      tags:
+        - User
+      summary: Аутентификация пользователя
+      description: Вход пользователя в систему
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  format: password
+                  example: secretpassword
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Пользователь успешно вошел.
+        '401':
+          description: Неверное имя пользователя или пароль.
+    get:
+      summary: Получить форму входа.
+      tags:
+        - User
+      responses:
+        '200':
+          description: Успешно получил форму входа.
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /update/:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - User
+      summary: Обновить информацию пользователя
+      description: Обновляет имя, фамилию, email, телефон и дату рождения пользователя.
+      requestBody:
+        required:  false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                First Name:
+                  type: string
+                  example: Jonh
+                Last Name:
+                  type: string
+                  example: Snow
+                Email:
+                  type: string
+                  format: email
+                  example: winter@gmail.com
+                Phone number:
+                  type: string
+                  pattern: '^[0-9]{11}$'
+                  example: 89707030704
+                Birthday:
+                  type: string
+                  format: date
+                  example: '1990-01-01'
+      responses:
+        '200':
+          description: Профиль успешно обновлен
+                
+        '400':
+          description: Неверные данные
+
+    get:
+      summary: Получить данные профиля
+      tags:
+        - User
+      responses:
+        '200':
+          description: Successfully got user profile.
+          content:
+            text/html:
+              schema:
+                type: string
+
+servers:
+- url: "http://127.0.0.1:9000/user/"

@@ -34,9 +34,8 @@ class Greeter(posts_pb2_grpc.GreeterServicer):
         return posts_pb2.HelloReply(message="Hello, %s!" % request.name)
     
     def GetPost(self, request, context):
-        print(123)
         post = self.session.query(Post).filter_by(id=request.id).first()
-        if post and post.login == request.login:
+        if post:
             found = posts_pb2.Post(
                 id=post.id,
                 login=post.login,
@@ -61,7 +60,7 @@ class Greeter(posts_pb2_grpc.GreeterServicer):
 
     def DeletePost(self, request, context):
         post = self.session.query(Post).filter_by(id=request.id).first()
-        if post.login == request.login:
+        if post and post.login == request.login:
             self.session.delete(post)
             self.session.commit()
             return posts_pb2.AddReply(success=True, message="Post deleted successfully")
@@ -69,8 +68,8 @@ class Greeter(posts_pb2_grpc.GreeterServicer):
     
 
     def UpdatePost(self, request, context):
-        post = self.session.query(Post).filter_by(id=request.id).first()
-        if post.login == request.post.login:
+        post = self.session.query(Post).filter_by(id=request.post.id).first()
+        if post and post.login == request.post.login:
             post.image = request.post.image
             post.description = request.post.description
             self.session.commit()
