@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            margin-right: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+                color: red;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Update User Info</h2>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form action="#" method="post">
+            <!-- {% csrf_token %} -->
+            <div class="form-group">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user_form.first_name.value }}">
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last name</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user_form.last_name.value }}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ user_form.email.value }}">
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone number (12 digits, example: 81112223344)</label>
+                <input type="tel" id="phone_number" name="phone_number" pattern="[0-9]{11}" value="{{ phone_number }}">
+            </div>
+            <div class="form-group">
+                <label for="birthday">birthday</label>
+                <input type="date" id="birthday" name="birthday" value="{{ user_birthday }}">
+            </div>
+            <div class="form-group">
+                <button type="submit">Update</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
