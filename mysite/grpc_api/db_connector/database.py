@@ -5,4 +5,4 @@ from sqlalchemy.orm import sessionmaker
 engine = create_engine('postgresql://postgres:postgres@postgresql/posts_database') # temp
 
 # Создайте фабрику сессий
-Session = sessionmaker(bind=engine)
+PostSession = sessionmaker(bind=engine)

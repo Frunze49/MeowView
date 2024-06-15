@@ -34,6 +34,12 @@ service Greeter {
   rpc UpdatePost (UpdateRequest) returns (UpdateReply) {}
 
   rpc ListPost (ListRequest) returns (ListReply) {}
+
+  rpc GetStatistics (StatisticRequest) returns (StatisticResponse);
+
+  rpc TopPosts () returns(TopPostResponse);
+
+  rpc TopUsers () returns(TopUsersResponse);
 }
 
 
